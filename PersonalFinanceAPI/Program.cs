@@ -47,6 +47,16 @@ using PersonalFinanceAPI.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+// 添加 CORS 策略
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
+
 // 添加数据库上下文并配置MySQL连接
 builder.Services.AddDbContext<FinanceContext>(options =>
     options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"),
@@ -70,6 +80,9 @@ if (app.Environment.IsDevelopment())
 
 // 配置 HTTP 请求管道
 app.UseHttpsRedirection();
+
+app.UseCors("AllowReactApp");  // 使用 CORS 策略
+
 
 app.UseAuthorization();
 
